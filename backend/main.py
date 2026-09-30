@@ -25,10 +25,15 @@ from backend.ai_service import (
     get_conversation, 
     get_chat_sessions,
     get_chat,
-    get_or_create
+    get_or_create,
+    identify_VA_code_section
 )
 
 from backend.database import create_tables, SessionLocal
+
+import json
+
+from backend.retrieve_knowledge import retrieve_knowledge
 
 # creates fastAPI application object
 # runs in RAM, not the server
@@ -54,8 +59,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 
-    # allows JS to read the custom X-Chat_Id response header
-    expose_headers=["X-Chat-Id"],
+    # allows JS to read the chat ID and RAG sources from the response headers
+    expose_headers=["X-Chat-Id", "X-Sources"],
 )
 
 create_tables()
@@ -68,6 +73,7 @@ def get_status():
 
 # this is calling a URL. so https://127.0.0.10/ or https://127.0.0.10/ask, etc.
 # one HTTP request --> one database session
+# this creates an API endpoint in the backend and offers to the frontend
 @app.get("/")
 def home():
     return FileResponse(frontend_path / "index.html")
@@ -85,6 +91,45 @@ def ask_ai(request: QuestionRequest):
         request.chat_id
     )
 
+    # retrieve the knowledge chunks related to the user's question
+    knowledge_results = retrieve_knowledge(request.question)
+
+    retrieved_sources = []
+
+    # go through each chunk that RAG retrieved
+    for knowledge_chunk in knowledge_results:
+
+        # store the PDF's name and official URL together
+        source = {
+
+            "name": knowledge_chunk.source_name,
+            "url": knowledge_chunk.source_url
+        }
+
+        # only add this field guide PDF if I have not already added it
+        if source not in retrieved_sources:
+            retrieved_sources.append(source)
+
+    # ask the helper to identify the relevant VA code section from the user's question
+    sectionNumber = identify_VA_code_section(request.question)
+
+    # if the identify_VA_Code_section returns a value which is 18.2-32 for example, this if runs
+    if sectionNumber:
+
+        titleNumber = sectionNumber.split("-"[0])
+
+        virginiaCodeUrl = (
+
+            f"https://law.lis.virginia.gov/vacode/"
+            f"title{titleNumber}/section{sectionNumber}/"
+        )
+
+        retrieved_sources.append({
+
+            "name": f"Virginia Code - § {sectionNumber}",
+            "url": virginiaCodeUrl
+        })
+
     # sends each yielded AI text chunk to the browser as it arrives
     return StreamingResponse(
 
@@ -98,10 +143,12 @@ def ask_ai(request: QuestionRequest):
 
         headers={
 
-            "X-Chat-Id": str(chat_id)
+            "X-Chat-Id": str(chat_id),
+
+            # convert the python source list into JSON text and send it to the browser
+            "X-Sources": json.dumps(retrieved_sources)
         }
     )
-
 
 # if someone sends a GET request to /history, run the function below
 # response_model is from FastAPI library

@@ -432,6 +432,11 @@ body.sidebar-open #header {
     line-height: 1.6;
 }
 
+.ai-message a {
+
+    color: #5588dd;
+}
+
 .ai-message p {
 
     margin: 0;
@@ -580,6 +585,17 @@ body.sidebar-open #header {
     to {
         transform: rotate(360deg);
     }
+}
+
+#sourcesLabel {
+
+    color: gray;
+    font-size: 20px !important;
+}
+
+.source-link {
+
+    color: #5588dd !important;
 }
 
 #inputBar {

@@ -50,7 +50,23 @@ const renameChat = document.getElementById("renameChat");
 
 const chatDrafts = {};
 
+// when a link inside an AI message is clicked, open it in a new browser tab
+// THIS DOES NOT decide what URL to use, it just creates the link of whatever the AI message supplied
+chatContainer.addEventListener("click", function (event) {
 
+    // event.target = the exact HTML element the user clicked
+    // was the clicked element an <a> link located inside an .ai-message?
+    if (event.target.matches(".ai-message a")) {
+
+        // prevent the link from opening the current MagHub tab
+        event.preventDefault();
+
+        // open the link's URL in a new browser tab
+        // event.target.href means get the URL from that link
+        // this entire sequence means open that URL in a new tab, safely
+        window.open(event.target.href, "_blank", "noopener, noreferrer");
+    }
+});
 
 sidebarToggle.addEventListener("click", function () {
 
@@ -502,6 +518,12 @@ askButton.addEventListener("click", async function () {
 
         const responseChatId = response.headers.get("X-Chat-Id");
 
+        // get the RAG sources that python sent in the X-Sources response header
+        const sourcesHeader = response.headers.get("X-Sources");
+
+        // convert the JSON source text into a JS array
+        const retrievedSources = sourcesHeader ? JSON.parse(sourcesHeader) : [];
+
         console.log("Chat ID header from backend:", responseChatId);
 
         // converts the returned chat ID from text into a number and stores it as request's perm chat ID
@@ -582,6 +604,48 @@ askButton.addEventListener("click", async function () {
 
     // .classList.remove() removes the temporary streaming-message class after AI response finishes
     aiMessage.classList.remove("streaming-message");
+
+    // only add a sources section if RAG actually returned sources
+    if (retrievedSources.length > 0) {
+
+        // add the Sources heading underneath the AI's answer
+        aiMessage.insertAdjacentHTML("beforeend", "<hr><strong id='sourcesLabel'>Sources:</strong>");
+
+        const displayedSources = new Set();
+
+        // go through each source python sent to JS
+        for (const source of retrievedSources) {
+
+            if (displayedSources.has(source.url)) {
+
+                continue;
+            }
+
+            displayedSources.add(source.url);
+
+            if (source.name.includes("Virginia Code")) {
+
+                aiMessage.insertAdjacentHTML(
+
+                    "beforeend",
+                    `<div>Virginia Code - <a class="source-link" href="${source.url}">§ ${source.name.split("§ ")[1]}</a></div>`
+                );
+            }
+
+            else {
+
+                const sourceDisplayName = source.name
+                    .replace(".pdf", "")
+                    .replace("chapter", "Chapter ");
+
+                aiMessage.insertAdjacentHTML(
+
+                    "beforeend",
+                    `<div>Magistrate Field Guide - <a class="source-link" href="${source.url}">${sourceDisplayName}</a></div>`
+                );
+            }
+        }
+    }
 
     // if the AI response finished in a chat that the user is no longer viewing
     if (currentChatId !== requestChatId) {

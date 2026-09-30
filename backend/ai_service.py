@@ -8,7 +8,11 @@ from backend.database import SessionLocal
 # importing the Conversation class
 from backend.models import Conversation, ChatSession
 
+from backend.retrieve_knowledge import retrieve_knowledge
+
 from typing import Optional
+
+from backend.retrieve_VA_code import retrieve_VA_code
 
 def get_or_create(question: str, chat_id: Optional[int] = None):
 
@@ -51,6 +55,37 @@ def get_or_create(question: str, chat_id: Optional[int] = None):
 
     finally:
         db.close()
+
+
+def identify_VA_code_section(question):
+
+    # ask the AI which VA code section most likely applies
+    # this comes from openAI 
+    response = client.responses.create(
+
+        model="gpt-5.5",
+        input=f"""
+        Identify the Code of Virginia Section most likely relevant to this question.
+
+        Question:
+        {question}
+
+        Return only the section number, such as:
+        18.2-58
+
+        If you cannot identify a section with reasonable confidence, return:
+        NONE 
+        """
+    )
+
+    # get the section number the AI returned
+    sectionNumber = response.output_text.strip()
+
+    # no reliable section was identified
+    if sectionNumber == "NONE":
+        return None
+
+    return sectionNumber
         
 
 def ask_openai(question: str, chat_id: Optional[int] = None):
@@ -84,6 +119,38 @@ def ask_openai(question: str, chat_id: Optional[int] = None):
             conversation_history += f"User: {convo.question}\n"
             conversation_history += f"Assistant: {convo.answer}\n"
 
+        # call the retrieval function and sae what it returns
+        knowledge_results = retrieve_knowledge(question)
+
+        # build the retrieved knowledge context
+        knowledge_context = ""
+
+        for knowledge_chunk in knowledge_results:
+            knowledge_context += f"Source: {knowledge_chunk.source_name}\n"
+            knowledge_context += f"URL: {knowledge_chunk.source_url}\n"
+            knowledge_context += f"Content: {knowledge_chunk.content}\n\n"
+
+        # ask the AI which VA code section is relevant to the user's question
+        sectionNumber = identify_VA_code_section(question)
+        
+        # start with no VA code text
+        virginiaCode = None
+        
+        # if the AI identified a section, retrieve the current statute from VA LIS
+        if sectionNumber:
+        
+            virginiaCode = retrieve_VA_code(sectionNumber)
+
+        virginiaCodeContext = ""
+
+        # if a VA code section was retrieved, add it to be the context for the final AI answer
+        if virginiaCode:
+            virginiaCodeContext = f"""
+
+        Virginia Code Section: {sectionNumber}
+
+        {virginiaCode}
+        """
         # controls how MagHub structures and formats AI responses
         response_instructions = """
 
@@ -124,17 +191,23 @@ def ask_openai(question: str, chat_id: Optional[int] = None):
             - Use bold text sparingly and only when emphasis materially improves readability.
             - Do not bold ordinary explanatory sentences, statutory text, or large portions of a response.
             - Prefer headings and spacing over excessive bold text for visual organization.
+            - Answer the user's specific question directly and concisely.
+            - Prioritize the most directly relevant retrieved information.
+            - Offer suggestions or questions at the end of your response to help the user follow up.
 
             Legal source rules: 
             - For Virginia law questions, rely only on approved legal sources provided by MagHub.
             - Prefer the current Code of Virginia for statutory authority.
-            - Use the Virginia Magistrate Manual for magistrate procedures and guidance.
+            - Use the Virginia Magistrate Field Guide for magistrate procedures and guidance.
             - Use approved Virginia court materials when applicable.
             - Do not invent or reconstruct statutory language from memory.
             - If the approved sources do not contain enough information to answer, say the available sources are insufficient.
             - Clearly identify the statute or source supporting the answer.
             - Clearly print the elements related to the code section listed if applicable.
             - Refer to Virginia Magistrate Field Guide when needed to assist in procedures and legal answers.
+            - For Virginia legal questions, use the Retrieved Knowledge as the factual basis for any legal or procedural claims it supports.
+            - Base legal claims on the retrieved sources and do not invent information that is not supported by them.
+            - Use only source names, source URLs, and legal information provided in Retrieved Knowledge. Do not invent or modify citations.
 
             Analysis rules: 
             - Separate the applicable law from the application of the user's facts.
@@ -163,6 +236,8 @@ def ask_openai(question: str, chat_id: Optional[int] = None):
         prompt = (
 
             conversation_history
+            + f"\nRetrieved Knowledge:\n{knowledge_context}"
+            + f"\nVirginia Code:\n{virginiaCodeContext}"
             + f"\nUser: {question}\n"
             + "Assistant:"
         )
@@ -202,6 +277,40 @@ def ask_openai(question: str, chat_id: Optional[int] = None):
                     # yield = send a result, pause the function, then continue when next result available
                     yield text_chunk
 
+        saved_answer = full_answer
+
+        saved_source_names = set()
+
+        if knowledge_results:
+
+            saved_answer += "\n\n---\n\n**Sources:**\n"
+
+            for knowledge_chunk in knowledge_results:
+
+                if knowledge_chunk.source_name not in saved_source_names:
+
+                    source_display_name = (
+
+                        knowledge_chunk.source_name
+                        .replace(".pdf", "")
+                        .replace("chapter", "Chapter ")
+                    )
+
+                    saved_answer += (
+                        f"\n\nMagistrate Field Guide - "
+                        f"[{source_display_name}]({knowledge_chunk.source_url})"
+
+                    )
+
+                    saved_source_names.add(knowledge_chunk.source_name)
+
+            if sectionNumber and virginiaCode:
+
+                virginiaCodeUrl = f"https://law.lis.virginia.gov/vacode/title{sectionNumber.split('-')[0]}/section{sectionNumber}/"
+
+                # sectionNumber = words you see
+                # virginiaCodeUrl = website you go to
+                saved_answer += f"\n\nVirginia Code - [§ {sectionNumber}]({virginiaCodeUrl})"
 
         # User: "How are you?"
         # Assistant: ...
@@ -220,7 +329,7 @@ def ask_openai(question: str, chat_id: Optional[int] = None):
             # right side question = use passed in question variable from the ask_openai function above
             chat=current_chat,
             question=question,
-            answer=full_answer
+            answer=saved_answer
         )
 
         # adds but does not save

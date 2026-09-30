@@ -107,3 +107,17 @@ class KnowledgeChunk(Base):
 
     # store the numeric embedding for this text chunk so pgvector can compare its meaning to user questions
     embedding: Mapped[list[float]] = mapped_column(Vector(1536))
+
+
+class VirginiaCodeSection(Base):
+
+    __tablename__ = "VA_code_sections"
+
+    # creates unique db ID for each row
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    # VA code section number, such as 18.2-51
+    section_number: Mapped[str] = mapped_column(String, unique=True)
+
+    # VA section title/description 
+    section_title_and_description: Mapped[str] = mapped_column(Text)
