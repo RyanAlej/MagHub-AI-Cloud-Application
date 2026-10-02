@@ -451,10 +451,13 @@ def generate_chat_title(question):
         input=f"""
         generate a short chat title (2-5 words) for the following user question.
 
-        question:
+        This is a Virginia legal and magistrate application.
+        Numbers formatted like 18.2-51, 19.2-82, 3.2-6570, or 8.01-428 should be interpreted as Virginia Code section numbers, not arithmetic.
+
+        Question:
         {question}
 
-        only return the title. Do not include quotes or any explanation.
+        Only return the title. Do not include quotes or any explanation.
         """
     )
     return response.output_text

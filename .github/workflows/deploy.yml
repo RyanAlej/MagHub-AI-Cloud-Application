@@ -1,0 +1,57 @@
+name: MagHub CI/CD
+
+# run this workflow whenever code is pushed to the main branch
+on: 
+  push: 
+    branches: 
+      - main
+
+# here are the jobs GitHub should perform when this workflow starts. 
+jobs: 
+
+  # Continuous Integration (CI) portion
+  build: 
+    runs-on: ubuntu-latest
+
+    steps: 
+
+      # download the MagHub repository onto the GitHub runner
+      - name: Checkout repository
+
+        # run an existing GitHub action someone already created (use prebuilt GitHub Action)
+        uses: actions/checkout@v4
+
+      # build the MagHub Docker image to verify the application can build
+      - name: Build Docker image
+      
+      # execute a normal terminal command on the ubuntu runner
+        run: docker build -t maghub .
+
+
+
+  # Continuous Deployment (CD) portion
+  # CD job that deploys MagHub after the build succeeds
+  deploy: 
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps: 
+
+      # connect to the EC2 server and deply the newest MagHub code
+      - name: Deploy to EC2
+
+        # prebuilt GitHub Action that SSH into another computer and execute commands there
+        uses: appleboy/ssh-action@v1.2.0
+
+        # with: means this is the information the Action needs
+        with: 
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          # once connected to EC2, run all of the following commands on EC2
+          # | means the YAML value continues across multiple lines
+          script: |
+            cd cloud-ai-platform
+            git pull origin main
+            docker-compose up -d --build
