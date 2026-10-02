@@ -54,4 +54,4 @@ jobs:
           script: |
             cd cloud-ai-platform
             git pull origin main
-            docker-compose up -d --build
+            docker compose up -d --build
