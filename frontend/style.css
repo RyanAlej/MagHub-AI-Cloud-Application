@@ -143,105 +143,6 @@ body.sidebar-open #header {
     margin-top: 10px;
 }
 
-#knowledgeBaseContainer {
-
-    flex: none;
-    flex-direction: column;
-    display: flex;
-    position: relative;
-    width: 100%;
-
-    /* at least the full screen height */
-    min-height: 100vh;
-
-    padding-left: 20px;
-    padding-top: 60px;
-    box-sizing: border-box;
-
-    font-size: 20px;
-}
-
-.knowledge-source {
-
-    margin-bottom: 40px;
-}
-
-#knowledgeBaseContainer h2 {
-
-    font-size: 22px;
-    font-weight: 350;
-    margin-bottom: 40px;
-}
-
-#knowledgeBaseContainer h3 {
-
-    font-size: 18px;
-    font-weight: 250;
-}
-
-#knowledgeBaseContainer p {
-
-    font-size: 14px;
-    font-weight: 250;
-}
-
-#knowledgeBaseContainer hr {
-
-    width: 100%;
-    margin-left: 0;
-}
-
-#knowledgeBaseContainer a {
-
-    font-size: 14px;
-    color: #5588dd;
-}
-
-#header.knowledge-base-header {
-
-    left: 20px;
-    top: 24px;
-    transform: none;
-
-    padding-bottom: 50px;
-}
-
-#closeKnowledgeBaseButton {
-
-    display: flex;
-    position: fixed;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0;
-    line-height: 1;
-
-    right: 20px;
-    top: 18px;
-    font-size: 26px;
-
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-
-    border: none;
-    background-color: #434b51;
-    color: white;
-    cursor: pointer;
-
-    padding-bottom: 7px;
-}
-
-#closeKnowledgeBaseButton:hover {
-
-    background-color: #66636b;
-}
-
-#closeKnowledgeBaseButton span {
-
-    transform: translateY(2px);
-}
-
 .unread-dot {
 
     width: 8px;
@@ -400,6 +301,428 @@ body.sidebar-open #header {
 #contextMenu div:hover {
 
     background: #3b3b3b;
+}
+
+#settingsOverlay {
+
+    display: none;
+    position: fixed;
+    inset: 0;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+}
+
+#settingsOverlay.open {
+
+    display: flex;
+}
+
+#settingsContainer {
+
+    position: relative;
+
+    width: 400px;
+    padding: 24px;
+
+    background-color: #2b2826;
+    border: 1px solid #4a4a4a;
+    border-radius: 16px;
+
+    color: white;
+
+    box-sizing: border-box;
+}
+
+.displaySizeButton {
+
+    /* add space inside the button */
+    padding: 8px 8px;
+
+    /* increase the button text size */
+    font-size: 12px;
+
+    /* change the mouse cursor when hovering */
+    cursor: pointer;
+
+    /* remove the default button border */
+    border: none;
+
+    /* change the button background color */
+    background-color: #4e4b51;
+
+    /* change the button text color */
+    color: white;
+
+    /* round the button corners */
+    border-radius: 12px;
+}
+
+.displaySizeButton:hover {
+
+    background-color: #44403C;
+}
+
+.displaySizeButton:active {
+
+    background: #55504a;
+    border-color: #6d6760;
+}
+
+.themeButton {
+
+    /* add space inside the button */
+    padding: 8px 12px;
+
+    /* increase the button text size */
+    font-size: 12px;
+
+    /* change the mouse cursor when hovering */
+    cursor: pointer;
+
+    /* remove the default button border */
+    border: none;
+
+    /* change the button background color */
+    background-color: #4e4b51;
+
+    /* change the button text color */
+    color: white;
+
+    /* round the button corners */
+    border-radius: 12px;
+}
+
+.themeButton:hover {
+
+    background-color: #44403C;
+}
+
+.themeButton:active {
+
+    background: #55504a;
+    border-color: #6d6760;
+}
+
+#closeSettingsButton {
+
+    /* positions relative to the settingsContainer */
+    position: absolute;
+
+    top: 20px;
+
+    right: 20px;
+
+    width: 40px;
+
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+
+    padding-bottom: 7px;
+
+    line-height: 1;
+
+    font-size: 26px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background-color: #434b51;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+#closeSettingsButton:hover {
+
+    background-color: #66636b;
+}
+
+body.display-compact .ai-message,
+body.display-compact .user-message {
+
+    font-size: 12px;
+}
+
+body.display-default .ai-message,
+body.display-default .user-message {
+
+    font-size: 16px;
+}
+
+body.display-large .ai-message,
+body.display-large .user-message {
+
+    font-size: 22px;
+}
+
+/* Compact display size */
+body.display-compact .sidebarButton,
+body.display-compact .chat-session {
+    font-size: 11px;
+}
+
+body.display-compact #header {
+    font-size: 22px;
+}
+
+body.display-compact #inputBar input,
+body.display-compact #inputBar button {
+    font-size: 14px;
+}
+
+
+/* Default display size */
+body.display-default .sidebarButton,
+body.display-default .chat-session {
+    font-size: 12px;
+}
+
+body.display-default #header {
+    font-size: 24px;
+}
+
+body.display-default #inputBar input,
+body.display-default #inputBar button {
+    font-size: 16px;
+}
+
+
+/* Large display size */
+body.display-large .sidebarButton,
+body.display-large .chat-session {
+    font-size: 16px;
+}
+
+body.display-large #header {
+    font-size: 28px;
+}
+
+body.display-large #inputBar input,
+body.display-large #inputBar button {
+    font-size: 22px;
+}
+
+
+/* ---------- LIGHT THEME ---------- */
+
+/* main page */
+body.theme-light {
+    background-color: #f5f5f5;
+}
+
+/* soften the main chat area in light mode */
+body.theme-light #mainContent,
+body.theme-light #chatContainer {
+    background-color: #e7e7e7;
+}
+
+/* main app text */
+body.theme-light #appLayout {
+    color: #1f1f1f;
+}
+
+/* MagHub header */
+body.theme-light #header {
+    color: #1f1f1f;
+}
+
+/* sidebar */
+body.theme-light #sidebar {
+    background-color: #e4e4e4;
+    color: #1f1f1f;
+}
+
+/* hamburger sidebar button */
+body.theme-light #sidebarToggle {
+    color: #1f1f1f;
+}
+
+/* new chat + button */
+body.theme-light #newChatButton {
+    background-color: #d0d0d0;
+    color: #1f1f1f;
+
+    border: 1px solid #b5b5b5;
+}
+
+body.theme-light #newChatButton:hover {
+    background-color: #c8c8c8;
+}
+
+/* chat session buttons */
+body.theme-light .chat-session {
+    background-color: #f8f8f8;
+    color: #1f1f1f;
+    border-color: #b5b5b5;
+}
+
+body.theme-light .chat-session:hover {
+    background-color: #eeeeee;
+}
+
+body.theme-light .chat-session.active {
+    background-color: #dddddd;
+    border-color: #bdbdbd;
+}
+
+/* Knowledge Base / Settings / About buttons */
+body.theme-light .sidebarButton {
+    background-color: #d0d0d0;
+    color: #1f1f1f;
+
+    border: 1px solid #b5b5b5;
+}
+
+body.theme-light .sidebarButton:hover {
+    background-color: #c8c8c8;
+}
+
+/* user message */
+body.theme-light .user-message {
+    background-color: #c9c9c9;
+    color: #1f1f1f;
+}
+
+/* AI response */
+body.theme-light .ai-message {
+    color: #1f1f1f;
+}
+
+/* input */
+body.theme-light #inputBar input {
+    background-color: #ffffff;
+    color: #1f1f1f;
+    border-color: #a8a8a8;
+}
+
+/* Ask button */
+body.theme-light #inputBar button {
+    background-color: #d0d0d0;
+    color: #1f1f1f;
+
+    border: 1px solid #b5b5b5;
+}
+
+body.theme-light #inputBar button:hover {
+    background-color: #c8c8c8;
+}
+
+/* Settings modal */
+body.theme-light #settingsContainer {
+    background-color: #ffffff;
+    color: #1f1f1f;
+    border-color: #cccccc;
+}
+
+/* Display Size + Theme buttons */
+body.theme-light .displaySizeButton,
+body.theme-light .themeButton {
+    background-color: #e2e2e2;
+    color: #1f1f1f;
+    border-color: #cccccc;
+}
+
+/* Settings X */
+body.theme-light #closeSettingsButton {
+    background-color: #e2e2e2;
+    color: #1f1f1f;
+}
+
+body.theme-light #closeSettingsButton:hover {
+    background-color: #cccccc;
+}
+
+/* ---------- ABOUT PAGE ---------- */
+
+#aboutContainer {
+
+    /* cover the entire app */
+    position: fixed;
+    inset: 0;
+
+    /* keep About above the normal MagHub screen */
+    z-index: 2000;
+
+    /* match MagHub's normal background */
+    background-color: #1f1d1b;
+    color: white;
+
+    /* space around the About content */
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    /* hide About until the About button is clicked */
+    display: none;
+
+    overflow-y: auto;
+}
+
+/* holds the About page text */
+#aboutContent {
+
+    /* keep long paragraphs from becoming too wide */
+    max-width: 900px;
+
+    /* add space below the About MagHub heading */
+    margin-top: 30px;
+
+    /* make the text comfortable to read */
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+
+/* space out each About paragraph */
+#aboutContent p {
+
+    margin-bottom: 28px;
+}
+
+#closeAboutButton {
+
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    padding-bottom: 7px;
+
+    line-height: 1;
+    font-size: 26px;
+
+    border: none;
+    border-radius: 12px;
+
+    background-color: #434b51;
+    color: white;
+
+    cursor: pointer;
+}
+
+#closeAboutButton:hover {
+
+    background-color: #66636b;
 }
 
 .user-message {

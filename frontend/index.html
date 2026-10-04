@@ -34,10 +34,6 @@
 
             <div id="sidebarButtons">
 
-                <button id ="knowledgeBaseButton" class="sidebarButton">
-                    Knowledge Base
-                </button>
-
                 <button id = "settingsButton" class="sidebarButton">
                     Settings
                 </button>
@@ -54,34 +50,96 @@
 
         </aside>
 
+        <div id="aboutContainer">
 
-        <div id="knowledgeBaseContainer">
+            <button id="closeAboutButton">&times;</button>
 
-            <button id="closeKnowledgeBaseButton">&times;</button>
+            <h2>About MagHub</h2>
 
-            <hr>
+            <hr> 
 
-            <h2>Resources</h2>
+            <div id="aboutContent">
 
-            <div class="knowledge-source">
+                <p>
+                    MagHub was created with the goal of supporting Virginia magistrates by making
+                    the legal and procedural information they rely on easier to access, understand,
+                    and apply. Magistrates are responsible for making important decisions across a
+                    wide range of matters, often while working independently and under significant
+                    time constraints. The information needed to make those decisions can be spread
+                    across different statutes, manuals, procedural guidance, and other resources.
+                    MagHub is intended to bring that information together into a more accessible
+                    environment so that magistrates can spend less time searching through separate
+                    resources and more time focusing on the matter before them.
+                </p>
 
-                <h3>Virginia Code</h3>
-                <p>Official statutory law of the Commonwealth of Virginia.</p>
-                <a href="SOURCE_URL_HERE" target="_blank">View Source</a>
+                <p>
+                    MagHub provides a conversational way to research questions that may arise during
+                    a magistrate's work. Instead of requiring the user to already know exactly where
+                    a particular rule, statute, or procedure is located, MagHub allows a magistrate
+                    to describe a question or situation in ordinary language and receive information
+                    relevant to that inquiry. When applicable, MagHub can draw from Virginia legal
+                    and magistrate-specific resources and present the information in a way that is
+                    easier to review and navigate.
+                </p>
+
+                <p>
+                    An important goal of MagHub is transparency. The purpose is not simply to provide
+                    an answer, but to help the magistrate understand where the information supporting
+                    that answer comes from. When MagHub relies on materials such as the Virginia Code
+                    or magistrate reference materials, relevant sources can be provided alongside the
+                    response so that the magistrate can review the underlying authority directly.
+                    This allows MagHub to function as a starting point for research while keeping
+                    authoritative legal and procedural materials readily available for verification.
+                </p>
+
+                <p>
+                    MagHub is not intended to replace the independent judgement, discretion, or legal
+                    responsibilities of a magistrate. Those decisions ultimately remain with the
+                    magistrate. Instead, MagHub is designed as a research and decision-support tool
+                    that can help organize information, identify potentially relevant authority, and
+                    reduce the amount of time required to locate useful guidance. Its role is to
+                    assist the decision-making process, not to make those decisions on behalf of the
+                    person using it.
+                </p>
+
+                <p>
+                    The broader goal of MagHub is to explore how modern artificial intelligence can
+                    be responsibly incorporated into the day-to-day work of Virginia magistrates.
+                    By combining a simple conversational interface with access to authoritative
+                    resources, MagHub aims to make legal research more efficient, accessible, and
+                    transparent. As the platform continues to develop, the goal is for it to become
+                    an increasingly useful workspace for navigating complex questions while preserving
+                    the human judgement and responsibility that are fundamental to the magistrate's role.
+                </p>
+
             </div>
+        </div>
 
-            <div class="knowledge-source">
 
-                <h3>Virginia Magistrate Manual</h3>
-                <p>Reference material for Virginia magistrate procedures and duties.</p>
-                <a href="SOURCE_URL_HERE" target="_blank">View Source</a>
-            </div>
+        <div id="settingsOverlay">
 
-            <div class="knowledge-source">
+            <div id="settingsContainer">
 
-                <h3></h3>
-                <p></p>
-                <a href="SOURCE_URL_HERE" target="_blank">View Source</a>
+                <button id="closeSettingsButton">&times;</button>
+
+                <h2>Settings</h2>
+
+                <hr>
+
+                <h3>Display Size</h3>
+
+                <div id="displaySizebuttons">
+                    <button class="displaySizeButton" data-size="compact">Compact</button>
+                    <button class="displaySizeButton" data-size="default">Default</button>
+                    <button class="displaySizeButton" data-size="large">Large</button>
+                </div>
+
+                <h3>Theme</h3>
+
+                <div id="themeButtons">
+                    <button class="themeButton" data-theme="dark">Dark</button>
+                    <button class="themeButton" data-theme="light">light</button>
+                </div>
             </div>
         </div>
 

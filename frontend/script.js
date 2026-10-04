@@ -30,12 +30,6 @@ const unreadChatIds = new Set();
 const newChatButton = document.getElementById("newChatButton");
 
 
-const knowledgeBaseButton = document.getElementById("knowledgeBaseButton");
-
-const closeKnowledgeBaseButton = document.getElementById("closeKnowledgeBaseButton");
-
-const knowledgeBaseContainer = document.getElementById("knowledgeBaseContainer");
-
 const settingsButton = document.getElementById("settingsButton");
 
 const aboutButton = document.getElementById("aboutButton");
@@ -46,6 +40,26 @@ const contextMenu = document.getElementById("contextMenu");
 const deleteChat = document.getElementById("deleteChat");
 
 const renameChat = document.getElementById("renameChat");
+
+
+//////////// SETTINGS ///////////////
+
+const settingsOverlay = document.getElementById("settingsOverlay");
+
+const settingsContainer = document.getElementById("settingsContainer");
+
+const closeSettingsButton = document.getElementById("closeSettingsButton");
+
+const displaySizeButtons = document.querySelectorAll(".displaySizeButton");
+
+const themeButtons = document.querySelectorAll(".themeButton");
+
+
+////////////// ABOUT ///////////////
+
+const aboutContainer = document.getElementById("aboutContainer");
+
+const closeAboutButton = document.getElementById("closeAboutButton");
 
 
 const chatDrafts = {};
@@ -307,40 +321,88 @@ newChatButton.addEventListener("click", function() {
 });
 
 
-knowledgeBaseContainer.style.display = "none";
+/////////// SETTINGS /////////////
 
-knowledgeBaseButton.addEventListener("click", function() {
 
-    chatContainer.style.display = "none";
+// show the Settings modal when the Settings button is clicked
+settingsButton.addEventListener("click", function () {
 
-    inputBar.style.display = "none";
-
-    sidebarToggle.style.display ="none";
-
-    sidebar.classList.add("collapsed");
-    document.body.classList.remove("sidebar-open")
-
-    header.classList.add("knowledge-base-header");
-
-    // block means SHOW the knowledge base when clicking the button
-    knowledgeBaseContainer.style.display = "block";
+    settingsOverlay.style.display = "flex";
 });
 
-closeKnowledgeBaseButton.addEventListener("click", function() {
+// close the Settings modal when the X button is clicked
+closeSettingsButton.addEventListener("click", function () {
 
-    // when clicing the X close button, now the knowledge base container closes and shows none
-    knowledgeBaseContainer.style.display = "none";
-
-    chatContainer.style.display = "";
-
-    inputBar.style.display = "";
-
-    sidebarToggle.style.display ="";
-
-    sidebar.classList.remove("collapsed");
-
-    header.classList.remove("knowledge-base-header");
+    settingsOverlay.style.display = "none";
 });
+
+// close Settings when clicking outside the Settings box
+settingsOverlay.addEventListener("click", function (event) {
+
+    // only close if the actual dark overlay itself was clicked
+    if (event.target === settingsOverlay) {
+
+        settingsOverlay.style.display = "none";
+    }
+});
+
+
+for (const button of displaySizeButtons) {
+
+    button.addEventListener("click", function () {
+
+        const selectedSize = button.dataset.size;
+
+        document.body.classList.remove(
+
+            "display-compact",
+            "display-default",
+            "display-large"
+        );
+
+        document.body.classList.add(`display-${selectedSize}`);
+
+        localStorage.setItem("displaySize", selectedSize);
+    });
+}
+
+// loop through each Theme button
+for (const button of themeButtons) {
+
+    // run when a Theme button is clicked
+    button.addEventListener("click", function () {
+
+        // get "dark" or "light" from the button's data-theme attribute
+        const selectedTheme = button.dataset.theme;
+
+        // remove any previously selected theme
+        document.body.classList.remove(
+            "theme-dark",
+            "theme-light"
+        );
+
+        // add the selected theme to the body
+        document.body.classList.add(`theme-${selectedTheme}`);
+
+        // remember the selected theme after refresh
+        localStorage.setItem("theme", selectedTheme);
+    });
+}
+
+//////////// ABOUT ///////////////
+
+// show the About page when About is clicked
+aboutButton.addEventListener("click", function () {
+
+    aboutContainer.style.display = "block";
+});
+
+// close the About page when the X is clicked
+closeAboutButton.addEventListener("click", function () {
+
+    aboutContainer.style.display = "none";
+});
+
 
 
 async function loadHistory() {
