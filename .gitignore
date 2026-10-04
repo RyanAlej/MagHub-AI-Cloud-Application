@@ -28,3 +28,9 @@ __pycache__/
 *.tfstate
 
 *.tfstate.*
+
+# private keys
+*.pem
+*.key
+id_ed25519
+id_rsa
