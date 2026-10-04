@@ -186,7 +186,26 @@ body.sidebar-open #header {
     justify-content: center;
 
     line-height: 1;
-    padding-bottom: 7px;
+}
+
+/* Creates both lines that make up the + symbol. */
+#newChatButton::before,
+#newChatButton::after {
+    content: "";
+    position: absolute;
+    background-color: white;
+}
+
+/* Creates the horizontal line of the +. */
+#newChatButton::before {
+    width: 14px;
+    height: 2px;
+}
+
+/* Creates the vertical line of the +. */
+#newChatButton::after {
+    width: 2px;
+    height: 14px;
 }
 
 #newChatButton:hover {
@@ -448,6 +467,32 @@ body.sidebar-open #header {
 #closeSettingsButton:hover {
 
     background-color: #66636b;
+}
+
+/* Creates both lines and puts their center at the button's center. */
+#closeSettingsButton::before,
+#closeSettingsButton::after,
+#closeAboutButton::before,
+#closeAboutButton::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 2px;
+    background-color: white;
+    left: 50%;
+    top: 50%;
+}
+
+/* First diagonal line. */
+#closeSettingsButton::before,
+#closeAboutButton::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Second diagonal line. */
+#closeSettingsButton::after,
+#closeAboutButton::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 body.display-compact .ai-message,
